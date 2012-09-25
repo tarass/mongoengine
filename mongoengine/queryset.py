@@ -1487,16 +1487,18 @@ class QuerySet(object):
                 raise InvalidQueryError("Updates must supply an operation "
                                         "eg: set__FIELD=value")
 
-            if 'pull' in op and '.' in key:
+            if 'pull' in op and ('.' in key) and _doc_cls:
+              for idx, field in enumerate(fields):
+                if getattr(field,'_is_list',None):
+                  break
+              if idx+1 == len(fields):
+                value = { key : value }
+              else:
                 # Dot operators don't work on pull operations
                 # it uses nested dict syntax
                 if op == 'pullAll':
-                    raise InvalidQueryError("pullAll operations only support "
-                                            "a single field depth")
-
-                parts.reverse()
-                for key in parts:
-                    value = {key: value}
+                    raise InvalidQueryError("pullAll operations only support a single field depth")
+                value = { '.'.join(parts[:idx+1]) : {'.'.join(parts[idx+1:]) : value }}
             elif op == 'addToSet' and isinstance(value, list):
                 value = {key: {"$each": value}}
             else:

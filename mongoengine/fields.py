@@ -571,6 +571,7 @@ class ListField(ComplexBaseField):
 
     # ListFields cannot be indexed with _types - MongoDB doesn't support this
     _index_with_types = False
+    _is_list = True
 
     def __init__(self, field=None, **kwargs):
         self.field = field
