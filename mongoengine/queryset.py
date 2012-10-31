@@ -1196,7 +1196,8 @@ class QuerySet(object):
         .. versionchanged:: 0.5 - Fixed handling references
         .. versionchanged:: 0.6 - Improved db_field refrence handling
         """
-        return self._dereference(self._cursor.distinct(field), 1,
+        key = QuerySet._translate_field_name(self._document, field)
+        return self._dereference(self._cursor.distinct(key), 1,
                                  name=field, instance=self._document)
 
     def only(self, *fields):
