@@ -720,23 +720,23 @@ class QuerySetTest(unittest.TestCase):
         p = self.Person.objects
         # Check default
         self.assertEqual(p._cursor_args,
-                {'snapshot': False, 'slave_okay': False, 'timeout': True})
+                {'read_preference':False, 'snapshot': False, 'slave_okay': False, 'timeout': True})
 
         p.snapshot(False).slave_okay(False).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': False, 'slave_okay': False, 'timeout': False})
+                {'read_preference':False, 'snapshot': False, 'slave_okay': False, 'timeout': False})
 
         p.snapshot(True).slave_okay(False).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': True, 'slave_okay': False, 'timeout': False})
+                {'read_preference':False, 'snapshot': True, 'slave_okay': False, 'timeout': False})
 
         p.snapshot(True).slave_okay(True).timeout(False)
         self.assertEqual(p._cursor_args,
-                {'snapshot': True, 'slave_okay': True, 'timeout': False})
+                {'read_preference':False, 'snapshot': True, 'slave_okay': True, 'timeout': False})
 
         p.snapshot(True).slave_okay(True).timeout(True)
         self.assertEqual(p._cursor_args,
-                {'snapshot': True, 'slave_okay': True, 'timeout': True})
+                {'read_preference':False, 'snapshot': True, 'slave_okay': True, 'timeout': True})
 
     def test_repeated_iteration(self):
         """Ensure that QuerySet rewinds itself one iteration finishes.

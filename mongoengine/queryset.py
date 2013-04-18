@@ -435,6 +435,7 @@ class QuerySet(object):
         self._mongo_query = None
         self._cursor_obj = None
         self._class_check = class_check
+        self._slave_okay = slave_okay
         return self
 
     def filter(self, *q_objs, **query):
@@ -599,7 +600,8 @@ class QuerySet(object):
         cursor_args = {
             'snapshot': self._snapshot,
             'timeout': self._timeout,
-            'slave_okay': self._slave_okay
+            'slave_okay': self._slave_okay,
+            'read_preference': self._collection.read_preference
         }
         if self._loaded_fields:
             cursor_args['fields'] = self._loaded_fields.as_dict()
