@@ -648,6 +648,8 @@ class ListField(ComplexBaseField):
         Required means it cannot be empty - as the default for ListFields is []
     """
 
+    _is_list = True
+
     def __init__(self, field=None, **kwargs):
         self.field = field
         kwargs.setdefault('default', lambda: [])
