@@ -1044,6 +1044,22 @@ class FieldTest(unittest.TestCase):
         simple = simple.reload()
         self.assertEqual(simple.widgets, [4])
 
+    def test_remove_marks_field_as_changed(self):
+
+        class Simple(Document):
+            widgets = ListField()
+
+        simple = Simple(widgets=[1, 2, 3, 4]).save()
+        old = simple.widgets
+        simple = Simple.objects(id=simple.id).first()
+        simple.widgets = old
+        simple.widgets.remove(3)
+        self.assertEqual(['widgets'], simple._changed_fields)
+        simple.save()
+
+        simple = simple.reload()
+        self.assertEqual(simple.widgets, [1,2,4])
+
     def test_list_field_complex(self):
         """Ensure that the list fields can handle the complex types."""
 

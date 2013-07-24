@@ -1525,6 +1525,35 @@ class QuerySetTest(unittest.TestCase):
 
         self.assertRaises(InvalidQueryError, pull_all)
 
+    def test_pull_nested_inner_list(self):
+
+        class User(Document):
+            name = StringField()
+
+        class Collaborators(EmbeddedDocument):
+            users = ListField(StringField())
+
+            def __unicode__(self):
+                return '%s' % self.users
+
+        class Site(Document):
+            name = StringField(max_length=75, unique=True, required=True)
+            collaborators = EmbeddedDocumentField(Collaborators)
+
+
+        Site.drop_collection()
+
+        c = Collaborators(users=['Esteban','Ross'])
+        s = Site(name="test", collaborators=c)
+        s.save()
+
+        Site.objects(id=s.id).update_one(pull__collaborators__users='Esteban')
+        self.assertEqual(Site.objects.first().collaborators.users, ['Ross'])
+
+        Site.objects(id=s.id).update_one(pull_all__collaborators__users=['Ross'])
+        self.assertEqual(Site.objects.first().collaborators.users, [])
+
+
     def test_update_one_pop_generic_reference(self):
 
         class BlogTag(Document):

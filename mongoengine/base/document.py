@@ -142,6 +142,11 @@ class BaseDocument(object):
            and self._created and name == self._meta['id_field']):
                 super(BaseDocument, self).__setattr__('_created', False)
 
+        #Covers the case where value is copied from one instance to another
+        # and Base* classes hold on to reference of original owner
+        if isinstance(value, (BaseList, BaseDict,)):
+            self._mark_as_changed(name)
+
         super(BaseDocument, self).__setattr__(name, value)
 
     def __getstate__(self):
