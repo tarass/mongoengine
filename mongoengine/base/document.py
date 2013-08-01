@@ -638,12 +638,15 @@ class BaseDocument(object):
             # ASCENDING from +,
             # DESCENDING from -
             # GEO2D from *
+            # HASHED from #
             direction = pymongo.ASCENDING
             if key.startswith("-"):
                 direction = pymongo.DESCENDING
             elif key.startswith("*"):
                 direction = pymongo.GEO2D
-            if key.startswith(("+", "-", "*")):
+            elif key.startswith("#"):
+                direction = pymongo.HASHED
+            if key.startswith(("+", "-", "*", "#")):
                 key = key[1:]
 
             # Use real field name, do it manually because we need field
